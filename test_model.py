@@ -49,7 +49,7 @@ class PDFQuestionGenerator:
         ]
 
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1500, chunk_overlap=200  # ✅ 페이지별로 최적화된 분할 크기
+            chunk_size=1000, chunk_overlap=50  # ✅ 페이지별로 최적화된 분할 크기
         )
 
         # ✅ `Document` 객체 리스트를 전달
@@ -84,21 +84,21 @@ class PDFQuestionGenerator:
 
     def get_prompt_template_path(self, difficulty, question_type):
         """주어진 난이도와 문제 유형에 따른 프롬프트 템플릿 경로 반환"""
-        base_path = "pdf_problem_generator/prompts"
+        base_path = "prompts"
         mapping = {
-            # ("객관식", "하"): "multiplechoice_low.yaml",
+            ("객관식", "하"): "multiplechoice_easy.yaml",
             ("객관식", "중"): "multiplechoice_medium.yaml",
-            # ("객관식", "상"): "multiplechoice_high.yaml",
-            # ("단답형", "하"): "shortanswer_low.yaml",
+            ("객관식", "상"): "multiplechoice_hard.yaml",
+            ("단답형", "하"): "shortanswer_easy.yaml",
             ("단답형", "중"): "shortanswer_medium.yaml",
-            # ("단답형", "상"): "shortanswer_high.yaml",
-            # ("서술형", "하"): "essay_low.yaml",
+            ("단답형", "상"): "shortanswer_hard.yaml",
+            ("서술형", "하"): "essay_easy.yaml",
             ("서술형", "중"): "essay_medium.yaml",
-            # ("서술형", "상"): "essay_high.yaml",
+            ("서술형", "상"): "essay_hard.yaml",
         }
         return os.path.join(
             base_path,
-            mapping.get((question_type, difficulty), "shortanswer_easy.yaml"),
+            mapping.get((question_type, difficulty)),
         )
 
     def create_chain(self, num_questions, prompt_path):
@@ -184,12 +184,12 @@ class PDFQuestionGenerator:
 if __name__ == "__main__":
     generator = PDFQuestionGenerator()
 
-    # pdf_path = "/Users/jeongtaek/kakaotech/pdf_problem_generator/필기(요약).pdf"
-    pdf_path = "https://amzn-s3-testprepai.s3.amazonaws.com/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXDKDZV7A4DD4BYFT%2F20250226%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250226T092039Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=801a7208d4541e6d1fef8bb9d9b0a4eadeed81cd453dd67d6337dda264736c44"
+    #pdf_path = "/Users/jeongtaek/kakaotech/pdf_problem_generator/필기(요약).pdf"
+    pdf_path = "https://amzn-s3-testprepai.s3.amazonaws.com/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXDKDZV7A4DD4BYFT%2F20250226%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250226T142303Z&X-Amz-Expires=1800&X-Amz-SignedHeaders=host&X-Amz-Signature=19abb07697e54c73df6cf9cb4e16b261dead45f8e6e752419a59e022425a19f1"
     num_questions = 5
-    difficulty = "하"
-    question_type = "단답식"
-    user_message = ""  # 기본값 (없으면 균등 샘플링)
+    difficulty = "중"
+    question_type = "서술형"
+    user_message = ""  # 기본값 (없으면 랜덤 샘플링)
 
     result, referenced_pages = generator.generate_questions(
         pdf_path, num_questions, difficulty, question_type, user_message
