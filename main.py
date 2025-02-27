@@ -118,7 +118,11 @@ def parse_essay_questions(text):
     
     return questions
 
-@app.post("/input-pdf")
+@app.get("/")
+def root():
+    return {"hello test-prep-ai"}
+
+@app.post("/problems/input-pdf")
 async def process_pdf(request: QuestionRequest):
     try:
         # PDF 읽기 위한 S3 Presigned URL 생성
@@ -155,6 +159,7 @@ async def process_pdf(request: QuestionRequest):
                     request.message  # 옵셔널 메시지
                 )
                 
+                
                 # 문제 유형별 파싱 함수 호출
                 parsed_questions = parsing_functions[question_type](result)
                 
@@ -168,10 +173,14 @@ async def process_pdf(request: QuestionRequest):
                 for page in pages:
                     all_referenced_pages.add(page)
         
+
+        topic = generator.generate_overall_topic(presigned_url)
+    
         # response 생성
         response = {
             "questions": all_questions,
-            "referencedPages": sorted(list(all_referenced_pages))
+            "referencedPages": sorted(list(all_referenced_pages)),
+            "topic": topic
         }
         
         return JSONResponse(content=response)
@@ -190,6 +199,6 @@ async def get_pdf_url(filename: str):
         return JSONResponse(content={"presignedUrl": presigned_url})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
