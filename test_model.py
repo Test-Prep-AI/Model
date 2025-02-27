@@ -49,7 +49,7 @@ class PDFQuestionGenerator:
         ]
 
         # 청크 분할 크기 설정
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
 
         # `Document` 객체 리스트를 전달하여 청크 분할
         split_documents = text_splitter.split_documents(docs)
