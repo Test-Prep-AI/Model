@@ -19,7 +19,7 @@ class PDFQuestionGenerator:
         """초기화: 환경 설정 및 모델 로드"""
         load_dotenv()
         # 랭스미스 트레이싱
-        os.environ["LANGCHAIN_PROJECT"] = "hackathon_final_model"  # 프로젝트 명 설정
+        os.environ["LANGCHAIN_PROJECT"] = "hackathon_final_model_v2"  # 프로젝트 명 설정
         os.environ["LANGSMITH_TRACING"] = "true"
 
         # 캐시 디렉토리 생성
@@ -49,7 +49,9 @@ class PDFQuestionGenerator:
         ]
 
         # 청크 분할 크기 설정
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=50
+        )
 
         # `Document` 객체 리스트를 전달하여 청크 분할
         split_documents = text_splitter.split_documents(docs)
@@ -192,7 +194,6 @@ class PDFQuestionGenerator:
         )
         print(overall_topic)
         return overall_topic.strip()
-        
 
 
 if __name__ == "__main__":
@@ -217,6 +218,6 @@ if __name__ == "__main__":
     overall_topic = generator.generate_overall_topic(pdf_path)
     print("\nPDF의 전반적인 주제:")
     print(overall_topic)
-    
+
     end = time.time()
     print(f"{end - start:.5f} sec")
