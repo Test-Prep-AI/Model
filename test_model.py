@@ -40,7 +40,7 @@ class PDFQuestionGenerator:
         raw_docs = loader.load()
 
         # pdf 전체 페이지 개수 확인
-        print(f"총 {len(raw_docs)}개의 페이지를 로드했습니다.")
+        # print(f"총 {len(raw_docs)}개의 페이지를 로드했습니다.")
 
         # `raw_docs`를 `Document` 객체 리스트로 변환
         docs = [
@@ -57,7 +57,7 @@ class PDFQuestionGenerator:
         split_documents = text_splitter.split_documents(docs)
 
         # 분할된 청크(조각) 개수 확인
-        print(f"총 {len(split_documents)}개의 조각으로 분할되었습니다.")
+        # print(f"총 {len(split_documents)}개의 조각으로 분할되었습니다.")
 
         return split_documents
 
@@ -149,6 +149,7 @@ class PDFQuestionGenerator:
 
         response = chain.invoke({"question": user_message, "context": context_text})
         referenced_pages = sorted(list(referenced_pages))
+        print(f"{question_type}_{difficulty}_{num_questions}문제 생성완료...")
         return response, referenced_pages
 
     def generate_overall_topic(self, pdf_path):
@@ -192,7 +193,7 @@ class PDFQuestionGenerator:
             if hasattr(overall_response, "content")
             else str(overall_response)
         )
-        print(overall_topic)
+        print(f"done. topic : {overall_topic}")
         return overall_topic.strip()
 
 
