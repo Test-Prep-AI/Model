@@ -3,7 +3,7 @@ on: push
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: Test-Prep-AI/Model
-  VERSION: 1.0.1
+  VERSION: 1.1.0
 jobs:
   build:
     if: github.repository_owner == 'Test-Prep-AI' && github.ref == 'refs/heads/main'
